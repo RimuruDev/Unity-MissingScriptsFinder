@@ -20,6 +20,9 @@ This Unity Editor tool helps you find and remove missing scripts from your scene
    - **Find Missing Scripts in Scene**: Click this button to scan the scene and log all GameObjects with missing scripts.
    - **Delete All Missing Scripts**: Click this button to remove all missing scripts from the scene.
 
+![photo_2024-06-15_15-43-10](https://github.com/RimuruDev/Unity-MissingScriptsFinder/assets/85500556/50678983-b87e-47b2-b186-2e5b2650501c)
+![photo_2024-06-15_15-43-16](https://github.com/RimuruDev/Unity-MissingScriptsFinder/assets/85500556/43b7eba3-489d-4776-a18a-fb03413e5882)
+
 ## Contact
 
 - **Email**: [rimuru.dev@gmail.com](mailto:rimuru.dev@gmail.com)
