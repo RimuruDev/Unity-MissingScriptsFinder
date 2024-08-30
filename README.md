@@ -4,8 +4,9 @@ This Unity Editor tool helps you find and remove missing scripts from your scene
 
 ## Features
 
-- **Find Missing Scripts**: Scans the current scene for GameObjects with missing scripts and logs their locations.
-- **Delete Missing Scripts**: Removes all missing scripts from GameObjects in the scene.
+- **Find Missing Scripts in Scene**: Scans the current scene for GameObjects with missing scripts and logs their locations.
+- **Delete Missing Scripts in Scene**: Removes all missing scripts from GameObjects in the scene.
+- **Find Missing Scripts in Prefabs**: Scans all prefabs in the project for missing scripts and logs their locations. You can click on the log entries to quickly locate the problematic prefab in the project.
 
 ## Installation
 
@@ -16,12 +17,23 @@ This Unity Editor tool helps you find and remove missing scripts from your scene
 
 1. Open Unity and go to the menu bar.
 2. Navigate to `RimuruDev Tools` > `Find Missing Scripts`.
-3. In the window that appears, you have two options:
+3. In the window that appears, you have three options:
    - **Find Missing Scripts in Scene**: Click this button to scan the scene and log all GameObjects with missing scripts.
-   - **Delete All Missing Scripts**: Click this button to remove all missing scripts from the scene.
+   - **Delete All Missing Scripts in Scene**: Click this button to remove all missing scripts from the scene.
+   - **Find Missing Scripts in Prefabs**: Click this button to scan all prefabs in the project for missing scripts. Each logged message allows you to click on it to ping and locate the prefab in the project window.
 
-![photo_2024-06-15_15-43-10](https://github.com/RimuruDev/Unity-MissingScriptsFinder/assets/85500556/50678983-b87e-47b2-b186-2e5b2650501c)
+<img width="240" alt="Снимок экрана 2024-08-30 в 12 57 37" src="https://github.com/user-attachments/assets/17358c42-989b-49a1-9b5b-6624258d1341">
+
+<img width="417" alt="Снимок экрана 2024-08-30 в 12 56 07" src="https://github.com/user-attachments/assets/ac49ae94-3a84-4c22-9e5f-ec855e866544">
+
+## Scene
+
 ![photo_2024-06-15_15-43-16](https://github.com/RimuruDev/Unity-MissingScriptsFinder/assets/85500556/43b7eba3-489d-4776-a18a-fb03413e5882)
+
+## Prefabs
+
+<img width="752" alt="Снимок экрана 2024-08-30 в 12 27 33" src="https://github.com/user-attachments/assets/e01c915d-abf8-48d4-9126-822968011dd1">
+
 
 ## Contact
 
