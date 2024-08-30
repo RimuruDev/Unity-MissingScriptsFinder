@@ -13,11 +13,9 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
-using System.Runtime.Remoting.Activation;
 
 namespace AbyssMoth
 {
-    [Url("https://github.com/RimuruDev/Unity-MissingScriptsFinder")]
     public sealed class MissingScriptsFinder : EditorWindow
     {
         [MenuItem("RimuruDev Tools/Find Missing Scripts")]
@@ -28,16 +26,21 @@ namespace AbyssMoth
         {
             if (GUILayout.Button("Find Missing Scripts in Scene"))
             {
-                FindMissingScripts();
+                FindMissingScriptsInScene();
             }
 
-            if (GUILayout.Button("Delete All Missing Scripts"))
+            if (GUILayout.Button("Delete All Missing Scripts in Scene"))
             {
-                DeleteAllMissingScripts();
+                DeleteAllMissingScriptsInScene();
+            }
+
+            if (GUILayout.Button("Find Missing Scripts in Prefabs"))
+            {
+                FindMissingScriptsInPrefabs();
             }
         }
 
-        private static void FindMissingScripts()
+        private static void FindMissingScriptsInScene()
         {
             var objects = FindObjectsOfType<GameObject>(true);
             var missingCount = 0;
@@ -58,12 +61,12 @@ namespace AbyssMoth
 
             Debug.Log(missingCount == 0
                 ? "No missing scripts found in the scene."
-                : $"<color=magenta>Found {missingCount} GameObjects with missing scripts.</color>");
+                : $"<color=magenta>Found {missingCount} GameObjects with missing scripts in the scene.</color>");
         }
 
-        private static void DeleteAllMissingScripts()
+        private static void DeleteAllMissingScriptsInScene()
         {
-            var objects = GameObject.FindObjectsOfType<GameObject>(true);
+            var objects = FindObjectsOfType<GameObject>(true);
             var removedCount = 0;
 
             foreach (var go in objects)
@@ -74,7 +77,6 @@ namespace AbyssMoth
                 {
                     if (component == null)
                     {
-                        Undo.RegisterCompleteObjectUndo(go, "Remove Missing Scripts");
                         GameObjectUtility.RemoveMonoBehavioursWithMissingScript(go);
                         removedCount++;
                     }
@@ -82,10 +84,36 @@ namespace AbyssMoth
             }
 
             Debug.Log(removedCount == 0
-                ? "No missing scripts found to delete."
-                : $"<color=magenta>Deleted {removedCount} missing scripts.</color>");
+                ? "No missing scripts found to delete in the scene."
+                : $"<color=magenta>Deleted {removedCount} missing scripts in the scene.</color>");
 
             EditorSceneManager.MarkAllScenesDirty();
+        }
+
+        private static void FindMissingScriptsInPrefabs()
+        {
+            var prefabGUIDs = AssetDatabase.FindAssets("t:Prefab");
+            var missingCount = 0;
+
+            foreach (var guid in prefabGUIDs)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                var components = prefab.GetComponentsInChildren<Component>(true);
+
+                foreach (var component in components)
+                {
+                    if (component == null)
+                    {
+                        missingCount++;
+                        Debug.Log($"<color=yellow>Missing script found in Prefab: {path}</color>", prefab);
+                    }
+                }
+            }
+
+            Debug.Log(missingCount == 0
+                ? "No missing scripts found in any prefabs."
+                : $"<color=magenta>Found {missingCount} prefabs with missing scripts.</color>");
         }
 
         private static string GetFullPath(GameObject go)
