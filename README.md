@@ -10,8 +10,22 @@ This Unity Editor tool helps you find and remove missing scripts from your scene
 
 ## Installation
 
-1. Download or clone the repository.
-2. Place the `MissingScriptsFinder.cs` file in the `Assets/Editor` or `Assets/Plugins/Editor` directory of your Unity project.
+### Option 1: Install via Unity Package Manager
+
+1. Open Unity and go to `Window` > `Package Manager`.
+2. Click the `+` button in the top-left corner.
+3. Select `Add package from git URL...`.
+4. Enter the following URL:
+   ```
+   https://github.com/RimuruDev/Unity-MissingScriptsFinder.git
+   ```
+5. Click `Add` to install the package.
+
+### Option 2: Install via Release Package
+
+1. Download the latest `.unitypackage` file from the [Releases](https://github.com/RimuruDev/Unity-MissingScriptsFinder/releases) page.
+2. In Unity, go to `Assets` > `Import Package` > `Custom Package...`.
+3. Select the downloaded `.unitypackage` file and import it into your project.
 
 ## Usage
 
