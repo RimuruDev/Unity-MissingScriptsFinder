@@ -1,0 +1,29 @@
+{
+  "name": "unity-missing-scripts-finder",
+  "version": "1.1.1",
+  "description": "A Unity Editor tool for finding and removing missing scripts from your scenes and prefabs.",
+  "author": "RimuruDev",
+  "license": "MIT",
+  "main": "MissingScriptsFinder.cs",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RimuruDev/Unity-MissingScriptsFinder.git"
+  },
+  "keywords": [
+    "unity",
+    "editor",
+    "tool",
+    "missing-scripts",
+    "prefabs",
+    "gameobjects",
+    "rimurudev",
+    "rimuru-dev"
+  ],
+  "bugs": {
+    "email": "rimuru.dev@gmail.com",
+    "url": "https://github.com/RimuruDev/Unity-MissingScriptsFinder/issues"
+  },
+  "homepage": "https://github.com/RimuruDev/Unity-MissingScriptsFinder",
+  "dependencies": {}
+}
