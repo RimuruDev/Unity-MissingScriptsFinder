@@ -3,7 +3,7 @@
 // **************************************************************** //
 //
 //   Copyright (c) RimuruDev. All rights reserved.
-//   Contact me: 
+//   Contact:
 //          - Gmail:    rimuru.dev@gmail.com
 //          - GitHub:   https://github.com/RimuruDev
 //          - LinkedIn: https://www.linkedin.com/in/rimuru/
@@ -25,30 +25,37 @@ namespace AbyssMoth
         private void OnGUI()
         {
             if (GUILayout.Button("Find Missing Scripts in Scene"))
-            {
                 FindMissingScriptsInScene();
-            }
 
             if (GUILayout.Button("Delete All Missing Scripts in Scene"))
-            {
                 DeleteAllMissingScriptsInScene();
-            }
 
             if (GUILayout.Button("Find Missing Scripts in Prefabs"))
-            {
                 FindMissingScriptsInPrefabs();
-            }
         }
+
+        private static GameObject[] FindGameObjects(bool includeInactive = true)
+        {
+#if UNITY_6000_0_OR_NEWER
+            var inactiveMode = includeInactive
+                ? FindObjectsInactive.Include
+                : FindObjectsInactive.Exclude;
+
+            return Object.FindObjectsByType<GameObject>(inactiveMode, FindObjectsSortMode.InstanceID);
+#else
+            return Object.FindObjectsOfType<GameObject>(includeInactive);
+#endif
+        }
+
 
         private static void FindMissingScriptsInScene()
         {
-            var objects = FindObjectsOfType<GameObject>(true);
+            var objects = FindGameObjects();
             var missingCount = 0;
 
             foreach (var go in objects)
             {
                 var components = go.GetComponents<Component>();
-
                 foreach (var component in components)
                 {
                     if (component == null)
@@ -66,13 +73,12 @@ namespace AbyssMoth
 
         private static void DeleteAllMissingScriptsInScene()
         {
-            var objects = FindObjectsOfType<GameObject>(true);
+            var objects = FindGameObjects();
             var removedCount = 0;
 
             foreach (var go in objects)
             {
                 var components = go.GetComponents<Component>();
-
                 foreach (var component in components)
                 {
                     if (component == null)
@@ -119,7 +125,6 @@ namespace AbyssMoth
         private static string GetFullPath(GameObject go)
         {
             var path = "/" + go.name;
-
             while (go.transform.parent != null)
             {
                 go = go.transform.parent.gameObject;
