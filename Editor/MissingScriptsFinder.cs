@@ -10,6 +10,10 @@
 //
 // **************************************************************** //
 
+#if !UNITY_2020_OR_NEWER && !UNITY_2020_1_OR_NEWER
+using System.Linq;
+#endif
+
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
@@ -42,8 +46,17 @@ namespace AbyssMoth
                 : FindObjectsInactive.Exclude;
 
             return Object.FindObjectsByType<GameObject>(inactiveMode, FindObjectsSortMode.InstanceID);
-#else
+#elif UNITY_2020_OR_NEWER || UNITY_2020_1_OR_NEWER
             return Object.FindObjectsOfType<GameObject>(includeInactive);
+#else
+            if (includeInactive)
+            {
+                return Resources.FindObjectsOfTypeAll<GameObject>().Cast<GameObject>().ToArray();
+            }
+            else
+            {
+                return Object.FindObjectsOfType<GameObject>();
+            }
 #endif
         }
 
