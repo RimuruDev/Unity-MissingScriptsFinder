@@ -1,6 +1,6 @@
 {
   "name": "unity-missing-scripts-finder",
-  "version": "1.1.2",
+  "version": "1.2.2",
   "description": "A Unity Editor tool for finding and removing missing scripts from your scenes and prefabs.",
   "author": "RimuruDev",
   "license": "MIT",
