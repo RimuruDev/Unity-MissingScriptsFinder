@@ -1,0 +1,13 @@
+{
+    "name": "AbyssMoth.MissingScriptsFinder",
+    "rootNamespace": "AbyssMoth",
+    "references": [],
+    "includePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
