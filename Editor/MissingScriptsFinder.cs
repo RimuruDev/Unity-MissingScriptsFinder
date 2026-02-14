@@ -11,10 +11,11 @@
 // **************************************************************** //
 
 #if UNITY_EDITOR
-using System.Collections.Generic;
+using System;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 
 namespace AbyssMoth
 {
@@ -38,6 +39,9 @@ namespace AbyssMoth
 
             if (GUILayout.Button("Find Missing Scripts in Prefabs"))
                 FindMissingScriptsInPrefabs();
+
+            if (GUILayout.Button("Delete All Missing Scripts in Prefabs"))
+                DeleteAllMissingScriptsInPrefabs();
         }
 
         private static Transform[] FindSceneTransforms(bool includeInactive)
@@ -89,15 +93,7 @@ namespace AbyssMoth
                 if (go == null || !go.scene.IsValid())
                     continue;
 
-                var components = go.GetComponents<Component>();
-                var missingInGo = 0;
-
-                foreach (var component in components)
-                {
-                    if (component == null)
-                        missingInGo++;
-                }
-
+                var missingInGo = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(go);
                 if (missingInGo <= 0)
                     continue;
 
@@ -130,15 +126,7 @@ namespace AbyssMoth
                 if (go == null || !go.scene.IsValid())
                     continue;
 
-                var components = go.GetComponents<Component>();
-                var missingInGo = 0;
-
-                foreach (var component in components)
-                {
-                    if (component == null)
-                        missingInGo++;
-                }
-
+                var missingInGo = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(go);
                 if (missingInGo <= 0)
                     continue;
 
@@ -195,6 +183,99 @@ namespace AbyssMoth
             }
 
             Debug.Log($"<color=magenta>Found {missingComponents} missing scripts across {missingPrefabs} prefabs.</color>");
+        }
+
+        private static void DeleteAllMissingScriptsInPrefabs()
+        {
+            var prefabGuids = AssetDatabase.FindAssets("t:Prefab");
+            var removedPrefabs = 0;
+            var removedComponents = 0;
+
+            try
+            {
+                for (var i = 0; i < prefabGuids.Length; i++)
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(prefabGuids[i]);
+
+                    EditorUtility.DisplayProgressBar(
+                        "Missing Scripts",
+                        $"Scanning prefabs... {i + 1}/{prefabGuids.Length}",
+                        prefabGuids.Length <= 0 ? 1f : (float)(i + 1) / prefabGuids.Length
+                    );
+
+                    if (string.IsNullOrEmpty(path))
+                        continue;
+
+                    var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                    if (prefabStage != null && string.Equals(prefabStage.assetPath, path, StringComparison.OrdinalIgnoreCase))
+                    {
+                        Debug.LogWarning($"Prefab is currently open in Prefab Mode, skipped: {path}");
+                        continue;
+                    }
+
+                    var root = PrefabUtility.LoadPrefabContents(path);
+                    if (root == null)
+                        continue;
+
+                    try
+                    {
+                        var removedInPrefab = 0;
+                        var transforms = root.GetComponentsInChildren<Transform>(true);
+
+                        foreach (var t in transforms)
+                        {
+                            if (t == null)
+                                continue;
+
+                            var go = t.gameObject;
+                            if (go == null)
+                                continue;
+
+                            var missingInGo = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(go);
+                            if (missingInGo <= 0)
+                                continue;
+
+                            GameObjectUtility.RemoveMonoBehavioursWithMissingScript(go);
+                            removedInPrefab += missingInGo;
+                        }
+
+                        if (removedInPrefab <= 0)
+                            continue;
+
+                        PrefabUtility.SaveAsPrefabAsset(root, path, out var ok);
+                        if (!ok)
+                        {
+                            Debug.LogError($"Failed to save prefab after cleanup: {path}");
+                            continue;
+                        }
+
+                        removedPrefabs++;
+                        removedComponents += removedInPrefab;
+
+                        var prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                        Debug.Log($"<color=magenta>Deleted {removedInPrefab} missing scripts in Prefab: {path}</color>", prefabAsset);
+                    }
+                    finally
+                    {
+                        PrefabUtility.UnloadPrefabContents(root);
+                    }
+                }
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+
+            if (removedComponents == 0)
+            {
+                Debug.Log("No missing scripts found to delete in any prefabs.");
+                return;
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            Debug.Log($"<color=magenta>Deleted {removedComponents} missing scripts across {removedPrefabs} prefabs.</color>");
         }
 
         private static string GetFullPath(GameObject go)
